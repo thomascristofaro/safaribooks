@@ -48,20 +48,21 @@ class Display:
     SH_BG_YELLOW = "\033[43m" if "win" not in sys.platform else ""
 
     def __init__(self, log_file):
+        self.donevar = False
         self.output_dir = ""
         self.output_dir_set = False
-        self.log_file = os.path.join(PATH, log_file)
+        # self.log_file = os.path.join(PATH, log_file)
 
-        self.logger = logging.getLogger("SafariBooks")
-        self.logger.setLevel(logging.INFO)
-        logs_handler = logging.FileHandler(filename=self.log_file)
-        logs_handler.setFormatter(self.BASE_FORMAT)
-        logs_handler.setLevel(logging.INFO)
-        self.logger.addHandler(logs_handler)
+        # self.logger = logging.getLogger("SafariBooks")
+        # self.logger.setLevel(logging.INFO)
+        # logs_handler = logging.FileHandler(filename=self.log_file)
+        # logs_handler.setFormatter(self.BASE_FORMAT)
+        # logs_handler.setLevel(logging.INFO)
+        # self.logger.addHandler(logs_handler)
 
         self.columns, _ = shutil.get_terminal_size()
 
-        self.logger.info("** Welcome to SafariBooks! **")
+        # self.logger.info("** Welcome to SafariBooks! **")
 
         self.book_ad_info = False
         self.css_ad_info = Value("i", 0)
@@ -78,15 +79,16 @@ class Display:
         self.output_dir_set = True
 
     def unregister(self):
-        self.logger.handlers[0].close()
+        # self.logger.handlers[0].close()
         sys.excepthook = sys.__excepthook__
 
     def log(self, message):
-        try:
-            self.logger.info(str(message, "utf-8", "replace"))
+        pass
+        # try:
+        #     self.logger.info(str(message, "utf-8", "replace"))
 
-        except (UnicodeDecodeError, Exception):
-            self.logger.info(message)
+        # except (UnicodeDecodeError, Exception):
+        #     self.logger.info(message)
 
     def out(self, put):
         pattern = "\r{!s}\r{!s}\n"
@@ -111,6 +113,8 @@ class Display:
         self.log(error)
         output = self.SH_BG_RED + "[#]" + self.SH_DEFAULT + " %s" % error
         self.out(output)
+        if not self.donevar:
+            raise Exception(error)
 
     def exit(self, error):
         self.error(str(error))
@@ -137,22 +141,7 @@ class Display:
                      .format(*self.last_request))
 
     def intro(self):
-        output = self.SH_YELLOW + ("""
-       ____     ___         _
-      / __/__ _/ _/__ _____(_)
-     _\ \/ _ `/ _/ _ `/ __/ /
-    /___/\_,_/_/ \_,_/_/ /_/
-      / _ )___  ___  / /__ ___
-     / _  / _ \/ _ \/  '_/(_-<
-    /____/\___/\___/_/\_\/___/
-""" if random() > 0.5 else """
- ██████╗     ██████╗ ██╗  ██╗   ██╗██████╗
-██╔═══██╗    ██╔══██╗██║  ╚██╗ ██╔╝╚════██╗
-██║   ██║    ██████╔╝██║   ╚████╔╝   ▄███╔╝
-██║   ██║    ██╔══██╗██║    ╚██╔╝    ▀▀══╝
-╚██████╔╝    ██║  ██║███████╗██║     ██╗
- ╚═════╝     ╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝
-""") + self.SH_DEFAULT
+        output = self.SH_YELLOW + ('** Welcome to SafariBooks! **') + self.SH_DEFAULT
         output += "\n" + "~" * (self.columns // 2)
 
         self.out(output)
@@ -192,6 +181,7 @@ class Display:
             )
 
     def done(self, epub_file):
+        self.donevar = True
         self.info("Done: %s\n\n" % epub_file +
                   "    If you like it, please * this project on GitHub to make it known:\n"
                   "        https://github.com/lorenzodifuccia/safaribooks\n"
@@ -410,8 +400,8 @@ class SafariBooks:
         self.display.done(os.path.join(self.BOOK_PATH, self.book_id + ".epub"))
         self.display.unregister()
 
-        if not self.display.in_error and not args.log:
-            os.remove(self.display.log_file)
+        # if not self.display.in_error and not args.log:
+        #     os.remove(self.display.log_file)
 
     def handle_cookie_update(self, set_cookie_headers):
         for morsel in set_cookie_headers:
