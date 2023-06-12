@@ -25,6 +25,7 @@ def convertEPUBFromCode(bookid: str):
 
 
 def convertEPUBFromFolder(path: str):
+    convert_cmd = 'C:\\Program Files\Calibre2\ebook-convert.exe'
     files = list((f for f in os.scandir(path) if (
         f.is_file() and ('.epub' in f.name))))
     fclear = list((f for f in files if '_CLEAR.epub' in f.name))
@@ -33,11 +34,10 @@ def convertEPUBFromFolder(path: str):
     else:
         epub = files[0]
         print("Start conversion in: " + epub.path)
-        path1 = '"C:\\Books\\safaribooks\\' + epub.path[2:] + '"'
-        path2 = '"C:\\Books\\safaribooks\\' + \
-            epub.path[2:-5] + '_CLEAR' + epub.path[-5:] + '"'
-        cmd = 'cd "C:\\Program Files (x86)\\Calibre2" && .\\ebook-convert.exe {0} {1}'.format(
-            path1, path2)
+        path1 = epub.path
+        path2 = epub.path[:-5] + '_CLEAR' + epub.path[-5:]
+        # print('"{0}" "{1}" "{2}"'.format(convert_cmd, path1, path2))
+        cmd = '"{0}" "{1}" "{2}"'.format(convert_cmd, path1, path2)
         print(cmd)
         proc = subprocess.Popen(
             cmd, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
@@ -97,9 +97,9 @@ def start_batch_download():
 
 
 if __name__ == "__main__":
-    # folder_list = list((f for f in os.scandir('.\\Books') if f.is_dir()))
-    # for folder in folder_list:
-    #     print("Found folder: " + folder.name)
-    #     convertEPUBFromFolder(folder.path)
+    folder_list = list((f for f in os.scandir('D:\Books da sistemare') if f.is_dir()))
+    for folder in folder_list:
+        print("Found folder: " + folder.name)
+        convertEPUBFromFolder(folder.path)
     # convertEPUBFromCode('9781492076322')
-    start_batch_download()
+    # start_batch_download()
