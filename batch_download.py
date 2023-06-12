@@ -95,11 +95,27 @@ def start_batch_download():
         # convertEPUBFromCode(bookid)
         timesec = 15
 
+def rename(from_path, to_path):
+    folder_list = list((f for f in os.scandir(from_path) if f.is_dir()))
+    for folder in folder_list:
+        fclear = list((f for f in os.scandir(folder.path) if (f.is_file() and ('_CLEAR.epub' in f.name))))
+        if len(fclear) > 0:
+            print("Found book converted: " + fclear[0].path)
+            os.rename(fclear[0].path, to_path + '\\' + folder.name + '.epub')
+
 
 if __name__ == "__main__":
-    folder_list = list((f for f in os.scandir('D:\Books da sistemare') if f.is_dir()))
-    for folder in folder_list:
-        print("Found folder: " + folder.name)
-        convertEPUBFromFolder(folder.path)
+    # Rename file (non copia)
+    # rename('D:\Books da sistemare', 'D:\Books')
+
+    # Convert all epub downloaded
+    # folder_list = list((f for f in os.scandir('D:\Books da sistemare') if f.is_dir()))
+    # for folder in folder_list:
+    #     print("Found folder: " + folder.name)
+    #     convertEPUBFromFolder(folder.path)
+    
+    # Convert just one epub downloaded
     # convertEPUBFromCode('9781492076322')
+    
+    # Download all books in file books.txt
     # start_batch_download()
